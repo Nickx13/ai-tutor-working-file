@@ -28,14 +28,6 @@ const BottomNavigation = () => {
       activeIcon: 'MessageCircle',
       badge: notifications.chat,
     },
-    // {
-    //   id: 'solve',
-    //   label: 'Solve',
-    //   path: '/doubt-solver',
-    //   icon: 'Camera',
-    //   activeIcon: 'Camera',
-    //   badge: notifications.solve,
-    // },
     {
       id: 'quiz',
       label: 'Quiz',
@@ -52,6 +44,15 @@ const BottomNavigation = () => {
       activeIcon: 'Calendar',
       badge: notifications.plan,
     },
+
+    {
+      id: 'parent',
+      label: 'Dashboard',
+      path: '/parent-dashboard',
+      icon: 'ChartSpline',
+      activeIcon: 'ChartSpline',
+      badge: notifications.solve,
+    }
   ];
 
   const handleNavigation = (item) => {
@@ -71,22 +72,22 @@ const BottomNavigation = () => {
   };
 
   // Simulate receiving new notifications
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Randomly add notifications for demo purposes
-      const sections = ['chat', 'quiz', 'plan'];
-      const randomSection = sections[Math.floor(Math.random() * sections.length)];
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     // Randomly add notifications for demo purposes
+  //     const sections = ['chat', 'quiz', 'plan', 'solve', 'parent'];
+  //     const randomSection = sections[Math.floor(Math.random() * sections.length)];
       
-      if (Math.random() > 0.8) { // 20% chance every 30 seconds
-        setNotifications(prev => ({
-          ...prev,
-          [randomSection]: prev[randomSection] + 1,
-        }));
-      }
-    }, 30000);
+  //     if (Math.random() > 0.8) { // 20% chance every 30 seconds
+  //       setNotifications(prev => ({
+  //         ...prev,
+  //         [randomSection]: prev[randomSection] + 1,
+  //       }));
+  //     }
+  //   }, 30000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-90">
