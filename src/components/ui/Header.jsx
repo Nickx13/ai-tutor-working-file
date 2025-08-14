@@ -30,7 +30,7 @@ const Header = () => {
   const handleParentAccess = () => {
     setShowProfileMenu(false);
     // Navigate to parent dashboard
-    window.location.href = '/parent-dashboard';
+    window.location.href = '/#/parent-dashboard';
   };
 
   return (
