@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Icon from '../AppIcon';
+import { useNavigate } from 'react-router-dom';
+
 
 const Header = () => {
   const [currentStreak, setCurrentStreak] = useState(7);
