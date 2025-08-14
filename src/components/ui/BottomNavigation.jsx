@@ -6,9 +6,9 @@ const BottomNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState({
-    chat: 2,
+    chat: 0,
     solve: 0,
-    quiz: 1,
+    quiz: 0,
     plan: 0,
   });
 
@@ -28,14 +28,14 @@ const BottomNavigation = () => {
       activeIcon: 'MessageCircle',
       badge: notifications.chat,
     },
-    {
-      id: 'solve',
-      label: 'Solve',
-      path: '/doubt-solver',
-      icon: 'Camera',
-      activeIcon: 'Camera',
-      badge: notifications.solve,
-    },
+    // {
+    //   id: 'solve',
+    //   label: 'Solve',
+    //   path: '/doubt-solver',
+    //   icon: 'Camera',
+    //   activeIcon: 'Camera',
+    //   badge: notifications.solve,
+    // },
     {
       id: 'quiz',
       label: 'Quiz',
@@ -74,7 +74,7 @@ const BottomNavigation = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       // Randomly add notifications for demo purposes
-      const sections = ['chat', 'solve', 'quiz', 'plan'];
+      const sections = ['chat', 'quiz', 'plan'];
       const randomSection = sections[Math.floor(Math.random() * sections.length)];
       
       if (Math.random() > 0.8) { // 20% chance every 30 seconds
