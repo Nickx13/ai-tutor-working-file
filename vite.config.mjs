@@ -17,6 +17,6 @@ export default defineConfig({
     host: "0.0.0.0",
     strictPort: true,
   },
-  base: '/ai-tutor-working-file'
+  base: '/ai-tutor-working-file/'
 });
 
