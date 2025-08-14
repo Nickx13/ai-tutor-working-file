@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
+import { HashRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
 // Add your imports here
@@ -13,22 +13,22 @@ import NotFound from "pages/NotFound";
 
 const Routes = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ErrorBoundary>
-      <ScrollToTop />
-      <RouterRoutes>
-        {/* Define your routes here */}
-        <Route path="/" element={<HomeDashboard />} />
-        <Route path="/home-dashboard" element={<HomeDashboard />} />
-        <Route path="/adaptive-quiz" element={<AdaptiveQuiz />} />
-        <Route path="/doubt-solver" element={<DoubtSolver />} />
-        <Route path="/ai-chat-tutor" element={<AiChatTutor />} />
-        <Route path="/study-plan-generator" element={<StudyPlanGenerator />} />
-        <Route path="/parent-dashboard" element={<ParentDashboard />} />
-        <Route path="*" element={<NotFound />} />
-      </RouterRoutes>
+        <ScrollToTop />
+        <RouterRoutes>
+          {/* Define your routes here */}
+          <Route path="/" element={<HomeDashboard />} />
+          <Route path="/home-dashboard" element={<HomeDashboard />} />
+          <Route path="/adaptive-quiz" element={<AdaptiveQuiz />} />
+          <Route path="/doubt-solver" element={<DoubtSolver />} />
+          <Route path="/ai-chat-tutor" element={<AiChatTutor />} />
+          <Route path="/study-plan-generator" element={<StudyPlanGenerator />} />
+          <Route path="/parent-dashboard" element={<ParentDashboard />} />
+          <Route path="*" element={<NotFound />} />
+        </RouterRoutes>
       </ErrorBoundary>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
