@@ -41,8 +41,27 @@ const StudyPlanGenerator = () => {
     setError(null);
     
     try {
+      // ✅ Debugging: log everything the user selected
+      console.log("📌 Current Parameters:", parameters);
+
+      alert(
+        `✅ Selected Data:\n` +
+        `Subjects: ${parameters.subjects.map(s => s.name).join(", ") || "None"}\n` +
+        `Topics: ${parameters.topics.map(t => t.topic).join(", ") || "None"}\n` +
+        `Time Slots: ${
+          parameters.availableSlots.length > 0
+            ? parameters.availableSlots.map(s => `${s.day} ${s.start}-${s.end}`).join(", ")
+            : "None"
+        }\n` +
+        `Session Length: ${parameters.sessionLength} mins\n` +
+        `Break Duration: ${parameters.breakDuration} mins\n` +
+        `Study Mode: ${parameters.studyMode}`
+      );
+
+      // Generate the plan (from hook)
       const newPlan = generatePlan();
       setPlan(newPlan);
+
     } catch (err) {
       setError(err.message);
     } finally {

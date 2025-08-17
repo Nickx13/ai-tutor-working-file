@@ -1,0 +1,42 @@
+{
+  "Mathematics": {
+    "foundation": ["Number Systems", "Basic Algebra", "Geometry Fundamentals", "Fractions & Decimals", "Percentages", "Ratios & Proportions"],
+    "practice": ["Algebraic Expressions", "Linear Equations", "Coordinate Geometry", "Mensuration", "Data Handling", "Probability"],
+    "review": ["Previous Year Problems", "Mock Test Practice", "Formula Revision", "Speed Practice", "Error Analysis", "Final Review"]
+  },
+  "Science": {
+    "foundation": ["Matter & Its Properties", "Atomic Structure", "Living Organisms", "Motion & Forces", "Light & Sound", "Natural Resources"],
+    "practice": ["Chemical Reactions", "Life Processes", "Electricity & Magnetism", "Heredity & Evolution", "Control & Coordination", "Environmental Science"],
+    "review": ["Diagram Practice", "Experiment Review", "Important Definitions", "Concept Connections", "Practice Papers", "Quick Revision"]
+  },
+  "English": {
+    "foundation": ["Grammar Basics", "Parts of Speech", "Sentence Structure", "Vocabulary Building", "Reading Skills", "Comprehension"],
+    "practice": ["Essay Writing", "Letter Writing", "Story Writing", "Poem Analysis", "Grammar Exercises", "Speaking Practice"],
+    "review": ["Writing Practice", "Grammar Review", "Literature Revision", "Sample Papers", "Error Correction", "Final Polish"]
+  },
+  "Hindi": {
+    "foundation": ["व्याकरण मूल बातें", "वर्ण व शब्द", "वाक्य रचना", "संज्ञा व सर्वनाम", "विशेषण व क्रिया", "काव्य परिचय"],
+    "practice": ["निबंध लेखन", "पत्र लेखन", "कहानी लेखन", "कविता व्याख्या", "व्याकरण अभ्यास", "गद्य अभ्यास"],
+    "review": ["लेखन अभ्यास", "व्याकरण दोहराव", "साहित्य दोहराव", "प्रश्न पत्र अभ्यास", "त्रुटि सुधार", "अंतिम तैयारी"]
+  },
+  "Social Science": {
+    "foundation": ["History Basics", "Geography Fundamentals", "Civics Introduction", "Economics Basics", "Map Skills", "Timeline Study"],
+    "practice": ["Historical Analysis", "Geographical Concepts", "Political Processes", "Economic Systems", "Case Studies", "Current Affairs"],
+    "review": ["Important Dates", "Map Practice", "Constitution Review", "Economic Concepts", "Sample Questions", "Comprehensive Review"]
+  },
+  "Physics": {
+    "foundation": ["Motion in Straight Line", "Force & Newton's Laws", "Work Energy Power", "Sound Waves", "Light Properties", "Electricity Basics"],
+    "practice": ["Numerical Problems", "Graph Analysis", "Experimental Methods", "Formula Applications", "Conceptual Questions", "Problem Solving"],
+    "review": ["Formula Sheet", "Numerical Practice", "Concept Integration", "Previous Papers", "Quick Calculations", "Final Prep"]
+  },
+  "Chemistry": {
+    "foundation": ["Atoms & Molecules", "Chemical Bonding", "Acids Bases Salts", "Metals & Non-metals", "Periodic Classification", "Chemical Reactions"],
+    "practice": ["Equation Balancing", "Stoichiometry", "Lab Experiments", "Chemical Properties", "Reaction Mechanisms", "Problem Solving"],
+    "review": ["Formula Revision", "Reaction Summary", "Important Compounds", "Lab Techniques", "Sample Problems", "Concept Review"]
+  },
+  "Biology": {
+    "foundation": ["Cell Structure", "Life Processes", "Reproduction", "Heredity Basics", "Evolution Introduction", "Environmental Biology"],
+    "practice": ["Diagram Drawing", "Process Explanation", "Classification", "Life Cycle Studies", "Ecosystem Analysis", "Case Studies"],
+    "review": ["Diagram Practice", "Process Summary", "Classification Review", "Important Terms", "System Integration", "Final Review"]
+  }
+}
