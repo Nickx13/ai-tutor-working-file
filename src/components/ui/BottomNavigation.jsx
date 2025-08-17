@@ -47,7 +47,7 @@ const BottomNavigation = () => {
 
     {
       id: 'parent',
-      label: 'Dashboard',
+      label: 'Stats',
       path: '/parent-dashboard',
       icon: 'ChartSpline',
       activeIcon: 'ChartSpline',
