@@ -258,16 +258,22 @@ export const useStudyParameters = () => {
     if (parameters.subjects.length === 0) {
       throw new Error('Please add at least one subject');
     }
-    
-    if (Object.values(parameters.topics).flat().length === 0) {
-      throw new Error('Please add at least one topic');
-    }
-    
+
+    // Automatically add a default topic if none exist
+    const topicsCopy = { ...parameters.topics };
+    parameters.subjects.forEach(subject => {
+      if (!topicsCopy[subject.name] || topicsCopy[subject.name].length === 0) {
+        topicsCopy[subject.name] = ['Default Topic'];
+      }
+    });
+
+    const updatedParams = { ...parameters, topics: topicsCopy };
+
     if (parameters.availableSlots.length === 0) {
       throw new Error('Please add your available study times');
     }
-    
-    return generateStudyPlan(parameters);
+
+    return generateStudyPlan(updatedParams);
   };
   
   return {
