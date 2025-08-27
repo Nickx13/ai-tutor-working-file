@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Button from '../../../components/ui/Button';
-import Select from '../../../components/ui/Select';
 import Input from '../../../components/ui/Input';
 
 const TimeAvailability = ({ availableSlots, onAddTimeSlot, onRemoveTimeSlot }) => {
   const [newSlot, setNewSlot] = useState({
-    day: '',
+    days: [], // ✅ now supports multiple days
     start: '',
     end: ''
   });
@@ -15,10 +14,27 @@ const TimeAvailability = ({ availableSlots, onAddTimeSlot, onRemoveTimeSlot }) =
   ];
 
   const handleAddSlot = () => {
-    if (newSlot.day && newSlot.start && newSlot.end) {
-      onAddTimeSlot({ ...newSlot });
-      setNewSlot({ day: '', start: '', end: '' });
+    if (newSlot.days.length > 0 && newSlot.start && newSlot.end) {
+      // Add one slot per selected day
+      newSlot.days.forEach(day => {
+        onAddTimeSlot({ day, start: newSlot.start, end: newSlot.end });
+      });
+
+      // Reset form
+      setNewSlot({ days: [], start: '', end: '' });
     }
+  };
+
+  const toggleDay = (day) => {
+    setNewSlot(prev => {
+      const isSelected = prev.days.includes(day);
+      return {
+        ...prev,
+        days: isSelected
+          ? prev.days.filter(d => d !== day) // remove if already selected
+          : [...prev.days, day] // add if not selected
+      };
+    });
   };
 
   return (
@@ -38,14 +54,23 @@ const TimeAvailability = ({ availableSlots, onAddTimeSlot, onRemoveTimeSlot }) =
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Select
-            label="Day"
-            options={days.map(day => ({ value: day, label: day }))}
-            value={newSlot.day}
-            onChange={day => setNewSlot(prev => ({ ...prev, day }))}
-            placeholder="Select day"
-          />
-          
+          {/* ✅ Replace Select with Checkboxes */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Day(s)</label>
+            <div className="grid grid-cols-2 gap-2">
+              {days.map(day => (
+                <label key={day} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={newSlot.days.includes(day)}
+                    onChange={() => toggleDay(day)}
+                  />
+                  <span>{day}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           <Input
             type="time"
             label="Start Time"
@@ -63,7 +88,7 @@ const TimeAvailability = ({ availableSlots, onAddTimeSlot, onRemoveTimeSlot }) =
           <div className="flex items-end">
             <Button 
               onClick={handleAddSlot}
-              disabled={!newSlot.day || !newSlot.start || !newSlot.end}
+              disabled={newSlot.days.length === 0 || !newSlot.start || !newSlot.end}
               className="w-full"
             >
               Add

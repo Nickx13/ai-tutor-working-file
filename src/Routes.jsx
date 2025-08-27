@@ -10,6 +10,7 @@ import AiChatTutor from "pages/ai-chat-tutor";
 import StudyPlanGenerator from "pages/study-plan-generator";
 import ParentDashboard from "pages/parent-dashboard";
 import NotFound from "pages/NotFound";
+import StudyPlanPage from "pages/study-plan-generator/StudyPlanPage";
 
 const Routes = () => {
   return (
@@ -23,6 +24,7 @@ const Routes = () => {
           <Route path="/adaptive-quiz" element={<AdaptiveQuiz />} />
           <Route path="/doubt-solver" element={<DoubtSolver />} />
           <Route path="/ai-chat-tutor" element={<AiChatTutor />} />
+          <Route path="/study-plan/:id" element={<StudyPlanPage />} />
           <Route path="/study-plan-generator" element={<StudyPlanGenerator />} />
           <Route path="/parent-dashboard" element={<ParentDashboard />} />
           <Route path="*" element={<NotFound />} />
