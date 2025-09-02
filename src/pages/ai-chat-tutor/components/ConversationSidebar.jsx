@@ -1,146 +1,73 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 
-const ConversationSidebar = ({ isOpen, onClose, currentLanguage }) => {
+const ConversationSidebar = ({ 
+  isOpen, 
+  onClose, 
+  conversations = [], 
+  savedExplanations = [], 
+  onSelectConversation,
+  onSelectSavedExplanation, // Add this new prop
+  onDeleteConversation,
+  onNewChat,
+  onDeleteSavedExplanation
+}) => {
   const [activeTab, setActiveTab] = useState('history');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const conversationHistory = [
-    {
-      id: 1,
-      title: "Quadratic Equations",
-      lastMessage: "What is the formula for quadratic equation?",
-      timestamp: new Date(Date.now() - 3600000),
-      messageCount: 12,
-    },
-    {
-      id: 2,
-      title: "Photosynthesis Process",
-      lastMessage: "Explain the process of photosynthesis",
-      timestamp: new Date(Date.now() - 7200000),
-      messageCount: 8,
-    },
-    {
-      id: 3,
-      title: "Indian History",
-      lastMessage: "Tell me about Mughal Empire",
-      timestamp: new Date(Date.now() - 86400000),
-      messageCount: 15,
-    },
-    {
-      id: 4,
-      title: "Chemical Bonding",
-      lastMessage: "Types of chemical bonds",
-      timestamp: new Date(Date.now() - 172800000),
-      messageCount: 6,
-    },
-  ];
+  // Filter conversations based on search term in title, last message, or any message content
+  const filteredConversations = conversations.filter(conv => {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    
+    // Check title and last message first
+    if (conv.title.toLowerCase().includes(searchLower) ||
+        conv.lastMessage.toLowerCase().includes(searchLower)) {
+      return true;
+    }
+    
+    // Check all messages in the conversation
+    if (conv.messages && conv.messages.length > 0) {
+      return conv.messages.some(message => 
+        message.text && message.text.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    return false;
+  });
 
-  const savedExplanations = [
-    {
-      id: 1,
-      title: "Pythagorean Theorem",
-      subject: "Mathematics",
-      savedAt: new Date(Date.now() - 3600000),
-    },
-    {
-      id: 2,
-      title: "Newton\'s Laws",
-      subject: "Physics",
-      savedAt: new Date(Date.now() - 7200000),
-    },
-    {
-      id: 3,
-      title: "Periodic Table",
-      subject: "Chemistry",
-      savedAt: new Date(Date.now() - 86400000),
-    },
-  ];
+  const filteredSaved = savedExplanations.filter(saved =>
+    saved.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    saved.content.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const relatedTopics = [
-    { id: 1, title: "Linear Equations", subject: "Mathematics" },
-    { id: 2, title: "Algebraic Expressions", subject: "Mathematics" },
-    { id: 3, title: "Coordinate Geometry", subject: "Mathematics" },
-    { id: 4, title: "Trigonometry Basics", subject: "Mathematics" },
-  ];
-
-  const labels = {
-    en: {
-      history: "History",
-      saved: "Saved",
-      topics: "Topics",
-      conversations: "Recent Conversations",
-      explanations: "Saved Explanations",
-      relatedTopics: "Related Topics",
-      messages: "messages",
-      noHistory: "No conversation history",
-      noSaved: "No saved explanations",
-      startChat: "Start a new conversation",
-    },
-    hi: {
-      history: "इतिहास",
-      saved: "सहेजे गए",
-      topics: "विषय",
-      conversations: "हाल की बातचीत",
-      explanations: "सहेजे गए स्पष्टीकरण",
-      relatedTopics: "संबंधित विषय",
-      messages: "संदेश",
-      noHistory: "कोई बातचीत इतिहास नहीं",
-      noSaved: "कोई सहेजे गए स्पष्टीकरण नहीं",
-      startChat: "नई बातचीत शुरू करें",
-    },
-    bn: {
-      history: "ইতিহাস",
-      saved: "সংরক্ষিত",
-      topics: "বিষয়",
-      conversations: "সাম্প্রতিক কথোপকথন",
-      explanations: "সংরক্ষিত ব্যাখ্যা",
-      relatedTopics: "সম্পর্কিত বিষয়",
-      messages: "বার্তা",
-      noHistory: "কোন কথোপকথনের ইতিহাস নেই",
-      noSaved: "কোন সংরক্ষিত ব্যাখ্যা নেই",
-      startChat: "নতুন কথোপকথন শুরু করুন",
-    },
-    te: {
-      history: "చరిత్ర",
-      saved: "సేవ్ చేసినవి",
-      topics: "అంశాలు",
-      conversations: "ఇటీవలి సంభాషణలు",
-      explanations: "సేవ్ చేసిన వివరణలు",
-      relatedTopics: "సంబంధిత అంశాలు",
-      messages: "సందేశాలు",
-      noHistory: "సంభాషణ చరిత్ర లేదు",
-      noSaved: "సేవ్ చేసిన వివరణలు లేవు",
-      startChat: "కొత్త సంభాషణ ప్రారంభించండి",
-    },
-    ta: {
-      history: "வரலாறு",
-      saved: "சேமிக்கப்பட்டது",
-      topics: "தலைப்புகள்",
-      conversations: "சமீபத்திய உரையாடல்கள்",
-      explanations: "சேமிக்கப்பட்ட விளக்கங்கள்",
-      relatedTopics: "தொடர்புடைய தலைப்புகள்",
-      messages: "செய்திகள்",
-      noHistory: "உரையாடல் வரலாறு இல்லை",
-      noSaved: "சேமிக்கப்பட்ட விளக்கங்கள் இல்லை",
-      startChat: "புதிய உரையாடலைத் தொடங்கவும்",
-    },
+  const handleDeleteSavedExplanation = (explanationId, e) => {
+    e.stopPropagation(); // Prevent triggering any parent click events
+    if (window.confirm("Are you sure you want to delete this saved explanation?")) {
+      onDeleteSavedExplanation(explanationId);
+    }
   };
 
-  const currentLabels = labels[currentLanguage] || labels.en;
+  const handleSelectSavedExplanation = (explanation) => {
+    onSelectSavedExplanation(explanation);
+    onClose(); // Close sidebar on mobile after selection
+  };
+  
 
   const formatTimestamp = (timestamp) => {
     const now = new Date();
-    const diffInHours = Math.floor((now - timestamp) / (1000 * 60 * 60));
+    const messageTime = new Date(timestamp);
+    const diffInHours = Math.floor((now - messageTime) / (1000 * 60 * 60));
     
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
-    return timestamp.toLocaleDateString();
+    return messageTime.toLocaleDateString();
   };
 
   const tabs = [
-    { id: 'history', label: currentLabels.history, icon: 'Clock' },
-    { id: 'saved', label: currentLabels.saved, icon: 'Bookmark' },
-    { id: 'topics', label: currentLabels.topics, icon: 'Hash' },
+    { id: 'history', label: 'History', icon: 'Clock' },
+    { id: 'saved', label: 'Saved', icon: 'Bookmark' },
   ];
 
   if (!isOpen) return null;
@@ -149,37 +76,50 @@ const ConversationSidebar = ({ isOpen, onClose, currentLanguage }) => {
     <>
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-black/50 z-190 lg:hidden"
+        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
         onClick={onClose}
       />
       
       {/* Sidebar */}
       <div className={`
-        fixed top-14 right-0 bottom-16 w-80 bg-card border-l border-border z-200
+        fixed top-14 right-0 bottom-16 w-80 bg-card border-l border-border z-50
         transform transition-transform duration-300 ease-in-out
-        lg:relative lg:top-0 lg:bottom-0 lg:transform-none lg:z-auto
+        lg:relative lg:top-0 lg:bottom-0 lg:z-auto
         ${isOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+        flex flex-col
       `}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border lg:hidden">
-          <h3 className="text-lg font-semibold text-card-foreground">Chat History</h3>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors duration-150"
-          >
-            <Icon name="X" size={16} className="text-muted-foreground" />
-          </button>
+        {/* Search Bar */}
+        <div className="p-3 border-b border-border flex-shrink-0">
+          <div className="relative">
+            <Icon name="Search" size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search conversations..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 bg-muted rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+              >
+                <Icon name="X" size={16} className="text-muted-foreground" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-border">
+        <div className="flex border-b border-border flex-shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center space-x-2 px-3 py-3 text-sm font-medium transition-colors duration-150 ${
                 activeTab === tab.id
-                  ? 'text-primary border-b-2 border-primary bg-primary/5' :'text-muted-foreground hover:text-foreground'
+                  ? 'text-primary border-b-2 border-primary bg-primary/5' 
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <Icon name={tab.icon} size={16} />
@@ -188,73 +128,137 @@ const ConversationSidebar = ({ isOpen, onClose, currentLanguage }) => {
           ))}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Content - Fixed height with scrolling */}
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {activeTab === 'history' && (
             <div className="p-4 space-y-3">
-              <h4 className="text-sm font-medium text-card-foreground mb-3">
-                {currentLabels.conversations}
-              </h4>
-              {conversationHistory.map((conversation) => (
-                <button
-                  key={conversation.id}
-                  className="w-full text-left p-3 rounded-lg hover:bg-muted transition-colors duration-150 border border-border"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h5 className="font-medium text-card-foreground text-sm truncate">
-                      {conversation.title}
-                    </h5>
-                    <span className="text-xs text-muted-foreground ml-2">
-                      {formatTimestamp(conversation.timestamp)}
-                    </span>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-medium text-card-foreground">
+                  Recent Conversations
+                </h4>
+                <span className="text-xs text-muted-foreground">
+                  {filteredConversations.length} items
+                </span>
+              </div>
+              
+              {filteredConversations.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Icon name="MessageCircle" size={32} className="mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No conversations found</p>
+                  {searchTerm && (
+                    <p className="text-xs mt-1">No results for "{searchTerm}"</p>
+                  )}
+                </div>
+              ) : (
+                filteredConversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    className="group p-3 rounded-lg hover:bg-muted transition-colors duration-150 border border-border"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <button
+                        onClick={() => onSelectConversation(conversation.id)}
+                        className="flex-1 text-left min-w-0"
+                      >
+                        <h5 className="font-medium text-card-foreground text-sm truncate">
+                          {conversation.title}
+                        </h5>
+                      </button>
+                      <button
+                        onClick={() => onDeleteConversation(conversation.id)}
+                        className="opacity-0 group-hover:opacity-100 p-1 hover:bg-destructive/20 rounded transition-all duration-150 flex-shrink-0"
+                        title="Delete conversation"
+                      >
+                        <Icon name="Trash2" size={14} className="text-destructive" />
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => onSelectConversation(conversation.id)}
+                      className="text-left w-full"
+                    >
+                      <p className="text-xs text-muted-foreground truncate mb-2">
+                        {conversation.lastMessage}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-1">
+                          <Icon name="MessageCircle" size={12} className="text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground">
+                            {conversation.messageCount} messages
+                          </span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {formatTimestamp(conversation.timestamp)}
+                        </span>
+                      </div>
+                    </button>
                   </div>
-                  <p className="text-xs text-muted-foreground truncate mb-2">
-                    {conversation.lastMessage}
-                  </p>
-                  <div className="flex items-center space-x-1">
-                    <Icon name="MessageCircle" size={12} className="text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">
-                      {conversation.messageCount} {currentLabels.messages}
-                    </span>
-                  </div>
-                </button>
-              ))}
+                ))
+              )}
             </div>
           )}
 
           {activeTab === 'saved' && (
-            <div className="p-4 space-y-3">
-              <h4 className="text-sm font-medium text-card-foreground mb-3">
-                {currentLabels.explanations}
-              </h4>
-              {savedExplanations.map((explanation) => (
-                <button
-                  key={explanation.id}
-                  className="w-full text-left p-3 rounded-lg hover:bg-muted transition-colors duration-150 border border-border"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h5 className="font-medium text-card-foreground text-sm">
-                      {explanation.title}
-                    </h5>
-                    <Icon name="Bookmark" size={12} className="text-primary" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {explanation.subject}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatTimestamp(explanation.savedAt)}
-                    </span>
-                  </div>
-                </button>
-              ))}
+        <div className="p-4 space-y-3">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-medium text-card-foreground">
+              Saved Explanations
+            </h4>
+            <span className="text-xs text-muted-foreground">
+              {filteredSaved.length} items
+            </span>
+          </div>
+          
+          {filteredSaved.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Icon name="Bookmark" size={32} className="mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No saved explanations found</p>
+              {searchTerm && (
+                <p className="text-xs mt-1">No results for "{searchTerm}"</p>
+              )}
             </div>
+          ) : (
+            filteredSaved.map((explanation) => (
+              <div
+                key={explanation.id}
+                onClick={() => handleSelectSavedExplanation(explanation)}
+                className="group p-3 rounded-lg hover:bg-muted transition-colors duration-150 border border-border cursor-pointer"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h5 className="font-medium text-card-foreground text-sm flex-1 mr-2">
+                    {explanation.title}
+                  </h5>
+                  <div className="flex items-center">
+                    <Icon name="Bookmark" size={12} className="text-primary flex-shrink-0 mr-1" />
+                    <button
+                      onClick={(e) => handleDeleteSavedExplanation(explanation.id, e)}
+                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-destructive/20 rounded transition-all duration-150 flex-shrink-0"
+                      title="Delete saved explanation"
+                    >
+                      <Icon name="Trash2" size={14} className="text-destructive" />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                  {explanation.content}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">
+                    {explanation.subject}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatTimestamp(explanation.savedAt)}
+                  </span>
+                </div>
+              </div>
+            ))
           )}
+        </div>
+      )}
 
           {activeTab === 'topics' && (
             <div className="p-4 space-y-3">
               <h4 className="text-sm font-medium text-card-foreground mb-3">
-                {currentLabels.relatedTopics}
+                Related Topics
               </h4>
               {relatedTopics.map((topic) => (
                 <button
