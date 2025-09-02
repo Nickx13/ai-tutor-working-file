@@ -1,9 +1,12 @@
+// In AutoResizeTextarea.jsx - Keep it unchanged from your original version
 import React, { useEffect, useRef } from 'react';
 
 const AutoResizeTextarea = ({ 
   value, 
   onChange, 
-  maxRows = 6,
+  onKeyPress, 
+  placeholder, 
+  maxRows = 8,
   className = '',
   ...props 
 }) => {
@@ -12,12 +15,11 @@ const AutoResizeTextarea = ({
 
   useEffect(() => {
     if (textareaRef.current) {
-      // Calculate single row height on first render
       if (baseHeight.current === 0) {
         textareaRef.current.style.height = 'auto';
         baseHeight.current = textareaRef.current.scrollHeight;
       }
-      
+
       const maxHeight = baseHeight.current * maxRows;
       textareaRef.current.style.height = 'auto';
       const newHeight = Math.min(textareaRef.current.scrollHeight, maxHeight);
@@ -32,11 +34,24 @@ const AutoResizeTextarea = ({
       ref={textareaRef}
       value={value}
       onChange={onChange}
-      className={`w-full min-h-[44px] px-4 py-3 bg-muted rounded-2xl focus:outline-none resize-none ${className}`}
+      onKeyPress={onKeyPress}
+      placeholder={placeholder}
+      className={`w-full min-h-[44px] px-4 py-3 bg-muted rounded-2xl 
+        ring-0 
+        focus:outline-none 
+        focus-visible:ring-2 
+        focus-visible:ring-blue-400 
+        focus-visible:ring-offset-2 
+        focus-visible:ring-offset-background 
+        focus-visible:transition-shadow 
+        focus-visible:duration-200 
+        focus-visible:ease-out 
+        resize-none 
+        ${className}`}
       style={{
         transition: 'height 0.1s ease-out',
         minHeight: '44px',
-        WebkitOverflowScrolling: 'touch' // Smooth scrolling on iOS
+        WebkitOverflowScrolling: 'touch'
       }}
       {...props}
     />

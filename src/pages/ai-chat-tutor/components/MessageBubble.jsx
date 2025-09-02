@@ -1,9 +1,38 @@
+// In MessageBubble.jsx - Update the message bubble styling
 import React from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import { useChat } from '../ChatContext.jsx';
 
-const MessageBubble = ({ message, isUser }) => {
+// Simple markdown parser for basic formatting
+const formatMessageText = (text) => {
+  if (!text) return '';
+  
+  // Replace markdown with HTML elements
+  let formattedText = text
+    // Bold text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Italic text
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Headers (##, ###)
+    .replace(/### (.*?)(?:\n|$)/g, '<h3 class="text-lg font-semibold mt-3 mb-1">$1</h3>')
+    .replace(/## (.*?)(?:\n|$)/g, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>')
+    // Bullet points
+    .replace(/^- (.*?)(?:\n|$)/g, '<li class="ml-4">$1</li>')
+    // Numbered lists
+    .replace(/^(\d+)\. (.*?)(?:\n|$)/g, '<li class="ml-4">$2</li>')
+    // Line breaks
+    .replace(/\n/g, '<br />');
+  
+  // Wrap lists in proper tags
+  if (formattedText.includes('<li')) {
+    formattedText = formattedText.replace(/(<li.*?<\/li>)+/g, '<ul class="list-disc pl-5 my-2">$&</ul>');
+  }
+  
+  return formattedText;
+};
+
+const MessageBubble = ({ message, isUser, isTyping, onSave }) => {
   const { isLoading } = useChat();
 
   const formatTimestamp = (timestamp) => {
@@ -17,8 +46,29 @@ const MessageBubble = ({ message, isUser }) => {
     return messageTime.toLocaleDateString();
   };
 
+  const handleCopyMessage = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error('Failed to copy:', error);
+    }
+  };
+
+  const handleShareMessage = async (text) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'AI Tutor Message',
+          text: text
+        });
+      } catch (error) {
+        console.error('Sharing failed:', error);
+      }
+    }
+  };
+
   // Typing indicator for AI responses
-  if (!isUser && isLoading && !message) {
+  if (!isUser && isLoading && isTyping) {
     return (
       <div className="flex items-end space-x-2 mb-4">
         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -48,12 +98,41 @@ const MessageBubble = ({ message, isUser }) => {
       
       <div className={`max-w-[80%] ${isUser ? 'ml-auto' : 'mr-auto'}`}>
         <div
-          className={`rounded-2xl px-4 py-3 ${
+          className={`rounded-2xl px-4 py-3 relative group ${
             isUser
-              ? 'bg-primary text-primary-foreground rounded-br-md'
+              ? 'bg-primary text-white rounded-br-md' // Changed text-primary-foreground to text-white
               : 'bg-muted text-foreground rounded-bl-md'
           }`}
         >
+          {/* Message actions */}
+          {!isUser && onSave && (
+            <div className="absolute -top-2 -right-8 opacity-0 group-hover:opacity-100 flex space-x-1 transition-opacity duration-150">
+              <button
+                onClick={() => handleCopyMessage(message.text)}
+                className="p-1 bg-muted rounded hover:bg-muted/80"
+                title="Copy message"
+              >
+                <Icon name="Copy" size={12} />
+              </button>
+              <button
+                onClick={() => onSave(message)}
+                className="p-1 bg-muted rounded hover:bg-muted/80"
+                title="Save explanation"
+              >
+                <Icon name="Bookmark" size={12} />
+              </button>
+              {navigator.share && (
+                <button
+                  onClick={() => handleShareMessage(message.text)}
+                  className="p-1 bg-muted rounded hover:bg-muted/80"
+                  title="Share message"
+                >
+                  <Icon name="Share" size={12} />
+                </button>
+              )}
+            </div>
+          )}
+          
           {/* Voice message indicator */}
           {message.isVoice && (
             <div className="flex items-center text-xs text-muted-foreground mb-2">
@@ -64,63 +143,31 @@ const MessageBubble = ({ message, isUser }) => {
           
           <div className="space-y-2">
             {/* Image display */}
-            {message.image && (
-              <div className="rounded-lg overflow-hidden max-w-xs">
-                <Image 
-                  src={message.image} 
-                  alt="Uploaded content" 
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                />
-              </div>
-            )}
-            
-            {/* Extracted text */}
-            {message.extractedText && (
-              <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                <p className="text-xs text-muted-foreground mb-1">Extracted text:</p>
-                <p className="text-sm">{message.extractedText}</p>
-              </div>
-            )}
-            
-            {/* Main content */}
-            <div className="prose prose-sm max-w-none">
-              {message.text?.split('\n').map((line, index) => (
-                <p key={index} className="mb-2 last:mb-0">{line}</p>
-              ))}
-            </div>
-
-            {/* Code snippet */}
-            {message.codeSnippet && (
-              <div className="bg-gray-900 rounded-lg p-3 mt-2">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-gray-400">Code</span>
-                  <button 
-                    className="text-xs text-gray-400 hover:text-white transition-colors"
-                    onClick={() => navigator.clipboard.writeText(message.codeSnippet)}
-                  >
-                    Copy
-                  </button>
-                </div>
-                <pre className="text-sm text-green-400 overflow-x-auto">
-                  <code>{message.codeSnippet}</code>
-                </pre>
-              </div>
-            )}
-
-            {/* Steps */}
-            {message.steps && (
-              <div className="mt-3 space-y-2">
-                <p className="text-sm font-medium text-foreground">Step-by-step solution:</p>
-                {message.steps.map((step, index) => (
-                  <div key={index} className="flex items-start space-x-2">
-                    <div className="w-5 h-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium mt-0.5">
-                      {index + 1}
-                    </div>
-                    <p className="text-sm text-foreground flex-1">{step}</p>
+            {message.images && (
+              <div className="flex gap-2 mt-2">
+                {message.images.map((img, index) => (
+                  <div key={index} className="rounded-lg overflow-hidden max-w-xs">
+                    <Image 
+                      src={img} 
+                      alt={`Attached ${index}`} 
+                      className="w-full h-auto object-cover max-h-48"
+                      loading="lazy"
+                    />
                   </div>
                 ))}
               </div>
+            )}
+            
+            {/* Main content with formatted text */}
+            {message.text && (
+              <div 
+                className={`prose prose-sm max-w-none font-sans ${
+                  isUser ? 'text-white' : 'text-foreground' // Added conditional text color
+                }`}
+                dangerouslySetInnerHTML={{ 
+                  __html: formatMessageText(message.text) 
+                }}
+              />
             )}
           </div>
         </div>
@@ -128,15 +175,8 @@ const MessageBubble = ({ message, isUser }) => {
         {/* Timestamp */}
         <div className={`flex items-center mt-1 space-x-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
           <span className="text-xs text-muted-foreground">
-            {formatTimestamp(message.timestamp)}
+            {/* {formatTimestamp(message.timestamp)} */}
           </span>
-          {isUser && (
-            <Icon 
-              name="Check" 
-              size={12} 
-              className={`${message.read ? 'text-primary' : 'text-muted-foreground'}`} 
-            />
-          )}
         </div>
       </div>
     </div>
