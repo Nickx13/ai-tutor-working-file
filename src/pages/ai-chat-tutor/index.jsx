@@ -117,6 +117,8 @@ const AIChatTutor = () => {
     saveExplanation(message);
   };
 
+
+
   const handleSelectSavedExplanation = (explanation) => {
     // Load the conversation that contains this saved explanation
     loadConversation(explanation.conversationId);
@@ -181,19 +183,27 @@ const AIChatTutor = () => {
               </div>
             ) : (
               <>
-                {messages.map((message, index) => (
-                  <div
-                    key={message.id || index}
-                    ref={message.isHighlighted ? highlightedMessageRef : null}
-                    className={message.isHighlighted ? 'ring-2 ring-blue-400 rounded-lg' : ''}
-                  >
-                    <MessageBubble
-                      message={message}
-                      isUser={message.isUser}
-                      onSave={() => handleSaveExplanation(message)}
-                    />
-                  </div>
-                ))}
+                {messages.map((message, index) => {
+                  // Check if this specific message is saved in the current conversation
+                  const isMessageSaved = savedExplanations.some(
+                    exp => exp.messageId === message.id && exp.conversationId === currentConversationId
+                  );
+
+                  return (
+                    <div
+                      key={message.id || index}
+                      ref={message.isHighlighted ? highlightedMessageRef : null}
+                      className={message.isHighlighted ? 'ring-2 ring-blue-400 rounded-lg' : ''}
+                    >
+                      <MessageBubble
+                        message={message}
+                        isUser={message.isUser}
+                        isSaved={isMessageSaved}
+                        onSave={() => handleSaveExplanation(message)}
+                      />
+                    </div>
+                  );
+                })}
                 
                 {isLoading && (
                   <MessageBubble isTyping isUser={false} />
@@ -333,9 +343,9 @@ const AIChatTutor = () => {
           onClose={() => setShowImageUpload(false)}
           onImagesSelected={handleImagesSelected}
         />
-
-        <BottomNavigation />
       </div>
+
+      <BottomNavigation />
     </div>
   );
 };

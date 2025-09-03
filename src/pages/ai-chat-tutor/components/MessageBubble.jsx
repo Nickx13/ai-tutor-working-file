@@ -1,8 +1,7 @@
-// In MessageBubble.jsx - Update the message bubble styling
 import React from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
-import { useChat } from '../ChatContext.jsx';
+import { useChat } from '../ChatContext';
 
 // Simple markdown parser for basic formatting
 const formatMessageText = (text) => {
@@ -32,7 +31,7 @@ const formatMessageText = (text) => {
   return formattedText;
 };
 
-const MessageBubble = ({ message, isUser, isTyping, onSave }) => {
+const MessageBubble = ({ message, isUser, isTyping, onSave, isSaved }) => {
   const { isLoading } = useChat();
 
   const formatTimestamp = (timestamp) => {
@@ -100,7 +99,7 @@ const MessageBubble = ({ message, isUser, isTyping, onSave }) => {
         <div
           className={`rounded-2xl px-4 py-3 relative group ${
             isUser
-              ? 'bg-primary text-white rounded-br-md' // Changed text-primary-foreground to text-white
+              ? 'bg-primary text-white rounded-br-md'
               : 'bg-muted text-foreground rounded-bl-md'
           }`}
         >
@@ -114,13 +113,19 @@ const MessageBubble = ({ message, isUser, isTyping, onSave }) => {
               >
                 <Icon name="Copy" size={12} />
               </button>
-              <button
-                onClick={() => onSave(message)}
-                className="p-1 bg-muted rounded hover:bg-muted/80"
-                title="Save explanation"
-              >
-                <Icon name="Bookmark" size={12} />
-              </button>
+<button
+  onClick={() => onSave(message)}
+  className={`p-1 rounded hover:bg-muted/80 transition-colors ${
+    isSaved ? "text-blue-500" : "text-muted-foreground"
+  }`}
+  title={isSaved ? "Remove from saved" : "Save explanation"}
+>
+  <Icon 
+    name="Bookmark" 
+    size={12} 
+    className={isSaved ? "text-blue-500 fill-blue-500" : ""}
+  />
+</button>  
               {navigator.share && (
                 <button
                   onClick={() => handleShareMessage(message.text)}
@@ -162,7 +167,7 @@ const MessageBubble = ({ message, isUser, isTyping, onSave }) => {
             {message.text && (
               <div 
                 className={`prose prose-sm max-w-none font-sans ${
-                  isUser ? 'text-white' : 'text-foreground' // Added conditional text color
+                  isUser ? 'text-white' : 'text-foreground'
                 }`}
                 dangerouslySetInnerHTML={{ 
                   __html: formatMessageText(message.text) 

@@ -75,20 +75,33 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  const saveExplanation = (message) => {
+// In ChatContext.jsx, modify the saveExplanation function
+const saveExplanation = (message) => {
+  // Create a COMPOUND ID using conversationId + messageId
+  const compoundId = `${currentConversationId}_${message.id}`;
+  
+  const isAlreadySaved = savedExplanations.some(exp => exp.id === compoundId);
+  
+  if (isAlreadySaved) {
+    // Remove the explanation if it's already saved
+    setSavedExplanations(prev => prev.filter(exp => exp.id !== compoundId));
+    return false; // Return false to indicate it was removed
+  } else {
+    // Add the explanation if it's not saved
     const newExplanation = {
-      id: message.id,
-      messageId: message.id,
+      id: compoundId, // UNIQUE ID combining conversation + message
+      messageId: message.id, // Original message ID for reference
+      conversationId: currentConversationId,
       title: message.text.substring(0, 30) + (message.text.length > 30 ? '...' : ''),
       content: message.text,
       subject: 'General',
-      savedAt: new Date().toISOString(),
-      conversationId: currentConversationId
+      savedAt: new Date().toISOString()
     };
     
     setSavedExplanations(prev => [...prev, newExplanation]);
-    return newExplanation;
-  };
+    return true; // Return true to indicate it was saved
+  }
+};
 
   const deleteConversation = (conversationId) => {
     setConversations(prev => prev.filter(c => c.id !== conversationId));
