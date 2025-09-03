@@ -75,7 +75,8 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  const saveExplanation = (message) => {
+// In ChatContext.jsx, modify the saveExplanation function
+const saveExplanation = (message) => {
   // Create a COMPOUND ID using conversationId + messageId
   const compoundId = `${currentConversationId}_${message.id}`;
   
@@ -84,7 +85,7 @@ export const ChatProvider = ({ children }) => {
   if (isAlreadySaved) {
     // Remove the explanation if it's already saved
     setSavedExplanations(prev => prev.filter(exp => exp.id !== compoundId));
-    return null;
+    return false; // Return false to indicate it was removed
   } else {
     // Add the explanation if it's not saved
     const newExplanation = {
@@ -98,7 +99,7 @@ export const ChatProvider = ({ children }) => {
     };
     
     setSavedExplanations(prev => [...prev, newExplanation]);
-    return newExplanation;
+    return true; // Return true to indicate it was saved
   }
 };
 
